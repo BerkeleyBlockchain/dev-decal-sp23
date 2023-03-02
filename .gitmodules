@@ -1,0 +1,3 @@
+[submodule "hw3-Implementing NFT Marketplace/lib/solmate"]
+	path = hw3-Implementing NFT Marketplace/lib/solmate
+	url = https://github.com/transmissions11/solmate
