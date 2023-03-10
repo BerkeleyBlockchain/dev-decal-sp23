@@ -52,7 +52,6 @@ to verify that these functions work properly. Our tests are not comprehensive, b
 You can specify the verbosity of the output by changing the number of v's. ``` forge test ``` is the not verbose, while ``` forge test -vvvv ``` is extremely verbose.
 
 
-
 ## Submission
 
 Submit your NFTMarketplace.sol file and a screenshot of your 4/4 passed tests on this form:
