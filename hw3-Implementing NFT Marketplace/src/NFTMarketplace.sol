@@ -105,93 +105,80 @@ contract NFTMarketplace is NFT {
     }
 
     /* Updates the listing price of the contract */
-    function updateListingPrice(uint _listingPrice) public payable onlyOwner {
-        // TODO: Change the listing price
-        ____________
+    function updateListingPrice(uint _listingPrice) public payable {
+      require(owner() == msg.sender, "Only contract owner can update listing price.");
+      listingPrice = _listingPrice;
     }
 
     /* Returns the listing price of the contract */
-    // TODO: This function needs to be publically callable.
-    function getListingPrice() ______________________ {
-        return listingPrice;
+    function getListingPrice() public view returns (uint256) {
+      return listingPrice;
     }
 
     /* Returns only items a user has listed */
     function fetchItemsListed() public view returns (MarketItem[] memory) {
-        // Number of NFTs
-        uint totalItemCount = _tokenIds.current();
-        // The amount of NFTs owned by the user
-        uint itemCount = 0;
+      uint totalItemCount = _tokenIds.current();
+      uint itemCount = 0;
+      uint currentIndex = 0;
 
-        // TODO: Increment from the id of the first NFT to the last NFT
-        for (________) {
-            // TODO: Use the ID to get the MarketItem, and check if the seller of the MarketItem 
-            // is the person calling this function
-            if (_________) {
-                __________
-            }
+      for (uint i = 0; i < totalItemCount; i++) {
+        if (idToMarketItem[i + 1].seller == msg.sender) {
+          itemCount += 1;
         }
+      }
 
-        // TODO: To return all of the items, initialize an item array *that is stored in memory* (same as the return type)
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        // Keeping track of the index of the return array
-        uint currentIndex = 0;
-        
-        // TODO: Now, increment from the id of the first NFT to the last NFT, 
-        // but add each of the user's NFTs to the array we created. 
-        for (____________) {
-            // TODO: Same as before
-            if (_____________) {
-                // TODO: Since our MarketItems are in storage, in order to avoid unnecessary data copying, 
-                // we should save the pointer to their location, rather than copy the data to memory. We can 
-                // to do this by using a storage type variable. 
-                MarketItem storage currentItem = _________
-                ________ = currentItem;
-                currentIndex += 1;
-            }
+      MarketItem[] memory items = new MarketItem[](itemCount);
+      for (uint i = 0; i < totalItemCount; i++) {
+        if (idToMarketItem[i + 1].seller == msg.sender) {
+          uint currentId = i + 1;
+          MarketItem storage currentItem = idToMarketItem[currentId];
+          items[currentIndex] = currentItem;
+          currentIndex += 1;
         }
-        return items;
+      }
+      return items;
     }
 
     /* Returns only items that a user has purchased */
     function fetchMyNFTs() public view returns (MarketItem[] memory) {
-        //TODO: Initialize some variables / counters
-        uint totalItemCount = _________
-        ________ = __________
+      uint totalItemCount = _tokenIds.current();
+      uint itemCount = 0;
+      uint currentIndex = 0;
 
-
-        // TODO: Count how many NFTs the user owns
-        // TODO: Create and return an array with all the NFTs that the user has purchased
-        // Think: what are we doing differently this time?
-        _________________ = ________
-        _____________________ = _____________________
-        for (___________________) {
-            if (________________________) {
-               _____________________________________
-               _____________________________________
-               _____________________________________
-            }
+      for (uint i = 0; i < totalItemCount; i++) {
+        if (idToMarketItem[i + 1].owner == msg.sender) {
+          itemCount += 1;
         }
-        return items;
+      }
+
+      MarketItem[] memory items = new MarketItem[](itemCount);
+      for (uint i = 0; i < totalItemCount; i++) {
+        if (idToMarketItem[i + 1].owner == msg.sender) {
+          uint currentId = i + 1;
+          MarketItem storage currentItem = idToMarketItem[currentId];
+          items[currentIndex] = currentItem;
+          currentIndex += 1;
+        }
+      }
+      return items;
     }
+
 
     /* Returns all unsold market items */
     function fetchMarketItems() public view returns (MarketItem[] memory) {
-        // Number of NFTs
-        ___________________________
-        // TODO: get the number of unsold NFTs, we will subtract the number of sold NFTs from the total number of NFTs
-        uint unsoldItemCount = __________________________
+      uint itemCount = _tokenIds.current();
+      uint unsoldItemCount = _tokenIds.current() - _itemsSold.current();
+      uint currentIndex = 0;
 
-        _______________________
-        ___________________________________________________________
-        for (_______________________) {
-            //TODO: Think, what is different this time?
-            if (_____________________ == _________) {
-               _____________________________________
-               _____________________________________
-               _____________________________________
-            }
+      MarketItem[] memory items = new MarketItem[](unsoldItemCount);
+      for (uint i = 0; i < itemCount; i++) {
+        if (idToMarketItem[i + 1].owner == address(this)) {
+          uint currentId = i + 1;
+          MarketItem storage currentItem = idToMarketItem[currentId];
+          items[currentIndex] = currentItem;
+          currentIndex += 1;
         }
-        return items;
+      }
+      return items;
     }
 }
